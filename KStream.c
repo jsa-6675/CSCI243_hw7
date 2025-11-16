@@ -9,8 +9,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef unsigned char byte;
-
 /**
  * Struct KStream_s
  */
@@ -41,9 +39,9 @@ static void swap( byte *a, byte *b){
  * @return the next random byte from the keystream. 
  */
 static byte next_byte(KStream ks){
-	ks->i = (ks->i +1) mod 256;
-	ks->j = (ks->j + S[i]) mod 256;
-	swap(&(k->S[ks->i]),&(ks->S[ks->j]));
+	ks->i = (ks->i +1) % 256;
+	ks->j = (ks->j + ks->S[ks->i]) % 256;
+	swap(&(ks->S[ks->i]),&(ks->S[ks->j]));
 	byte B = ks->S[(ks->S[ks->i]+ks->S[ks->j]) % 256];
 	return B;
 	}
@@ -55,7 +53,7 @@ static byte next_byte(KStream ks){
  * ks_create- constructs a KStream instance.
  */
 KStream ks_create(byte *key, size_t keylen){
-	KStream ks = malloc(sizeof(KStream_s));
+	KStream ks = malloc(sizeof(struct KStream_s));
 	if (ks == NULL){
 		return NULL;
 	}
@@ -66,12 +64,12 @@ KStream ks_create(byte *key, size_t keylen){
 	ks->j = 0;
 
 	for( int i = 0; i < 256; i++){
-		ks->j = (ks->j + ks->S[i] + key[ i mod keylen]) % 256;
+		ks->j = (ks->j + ks->S[i] + key[ i % keylen]) % 256;
 		swap(&(ks->S[i]),&(ks->S[ks->j]));	
 	}	
 
 	ks->i = 0;
-	ks->j - 0;
+	ks->j = 0;
 
 	for ( int k = 0; k < 1024; k++){
 		next_byte(ks);
@@ -83,7 +81,7 @@ KStream ks_create(byte *key, size_t keylen){
 /**
  *ks_translate - translates data between input and output forms.
  */
-KStream ks_translate(KStream ks, byte *in_bytes, byte *out_bytes, size_t num){
+void ks_translate(KStream ks, byte *in_bytes, byte *out_bytes, size_t num){
 	
 	for (size_t i = 0; i < num; i++){
 		out_bytes[i] = in_bytes[i] ^ next_byte(ks);
