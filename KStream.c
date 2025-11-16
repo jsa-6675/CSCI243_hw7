@@ -51,6 +51,9 @@ static byte next_byte(KStream ks){
 
 // public Function Implementations 
 
+/**
+ * ks_create- constructs a KStream instance.
+ */
 KStream ks_create(byte *key, size_t keylen){
 	KStream ks = malloc(sizeof(KStream_s));
 	if (ks == NULL){
@@ -62,7 +65,7 @@ KStream ks_create(byte *key, size_t keylen){
 	}
 	ks->j = 0;
 
-	for( int i = 0; i < 265; i++){
+	for( int i = 0; i < 256; i++){
 		ks->j = (ks->j + ks->S[i] + key[ i mod keylen]) % 256;
 		swap(&(ks->S[i]),&(ks->S[ks->j]));	
 	}	
@@ -71,7 +74,23 @@ KStream ks_create(byte *key, size_t keylen){
 	ks->j - 0;
 
 	for ( int k = 0; k < 1024; k++){
-		
+		next_byte(ks);
+	}
+	
+	return ks;
+}
+
+/**
+ *ks_translate - translates data between input and output forms.
+ */
+KStream ks_translate(KStream ks, byte *in_bytes, byte *out_bytes, size_t num){
+	
+	for (size_t i = 0; i < num; i++){
+		out_bytes[i] = in_bytes[i] ^ next_byte(ks);
 	}
 }
-	
+
+// ks_destroy - free the mnemory for the KStream instance. 
+void ks_destroy(KStream ks){
+	free(ks);
+}
