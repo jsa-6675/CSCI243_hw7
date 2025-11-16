@@ -11,9 +11,9 @@
 
 #include <stdlib.h> 
 
-typedef struct Kstream_s * KStream
+typedef struct KStream_s * KStream;
 
-typedef unsigned char byte 
+typedef unsigned char byte;
 
 
 /**
@@ -39,14 +39,16 @@ KStream ks_create(byte *key, size_t keylen);
  * @param outBytes The output buffer to store the translated data.
  * @param num the number of bytes to translate. 
  */
-void ks_translate(Kstream ks, byte *in_bytes, *out_bytes, size_t num);
+void ks_translate(KStream ks, byte *in_bytes,byte *out_bytes, size_t num); 
+
+
 
 /**
  * Frees all resources with a KStream instance. 
  *
  *@param ks The Kstram instance to destroy
  */
-void ks_destroy(Kstream ks);
+void ks_destroy(KStream ks);
 
 #endif 
 
