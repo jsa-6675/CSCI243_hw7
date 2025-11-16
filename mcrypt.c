@@ -14,7 +14,6 @@
 #define KEY_SIZE 8
 #define BUFFER_SIZE 4096
 
-typedef unsigned char byte;
 
 /**
  * Prints the usage message to stderr.
@@ -32,17 +31,17 @@ static void print_usage(void){
  * @param out_file the open output file. 
  * @param prints to stdout if 1 prints to stdout 0 if otherwise.
  */
-static void main_helper(KStream ks, File *in_file, File *out_file, int to_stdout){
+static void main_helper(KStream ks, FILE *in_file, FILE *out_file, int to_stdout){
 	byte in_buffer[BUFFER_SIZE];
 	byte out_buffer[BUFFER_SIZE];
 	size_t bytes_read;
 
 	while ((bytes_read = fread(in_buffer, 1, BUFFER_SIZE, in_file)) > 0){
-		ks_translate(ks, in_buffer, out_bufer, bytes_read);
+		ks_translate(ks, in_buffer, out_buffer, bytes_read);
 		if (to_stdout == 1){
-			for (size i = 0; i < bytes_read; i++){
+			for (size_t i = 0; i < bytes_read; i++){
 				if(isascii(out_buffer[i])){
-					printf("%c" outbuffer[i]);
+					printf("%c", out_buffer[i]);
 				} else {
 					printf("%02x", out_buffer[i]);
 				}
@@ -54,6 +53,82 @@ static void main_helper(KStream ks, File *in_file, File *out_file, int to_stdout
 		
 	}
 
+}
+
+/**
+ * main function - 
+ * 		   this functions manages the setup, error checking, and cleanup of encrpyting
+ * 		   and decrypting
+ */
+int main(int argc, char *argv[]){
+	FILE *key_file  = NULL;
+	FILE *in_file = NULL;
+	FILE *out_file = NULL;
+	KStream ks =  NULL;
+
+	if (argc != 4){
+		print_usage();
+		return EXIT_FAILURE;
+	}
+
+	char *key_filename = argv[1];
+	char *in_filename = argv[2];
+	char *out = argv[3];
+
+	key_file = fopen(key_filename, "rb");
+	if (key_file == NULL){
+		perror(key_filename);
+		return EXIT_FAILURE;
+
+	}
+
+	byte key[KEY_SIZE];
+	size_t key_read = fread(key, 1, KEY_SIZE, key_file);
+	if(key_read != KEY_SIZE){
+		fprintf(stderr, "Error: Key file '%s' is not '%d' bytes long.\n",
+				key_filename, KEY_SIZE);
+		fclose(key_file);
+		return EXIT_FAILURE;
+	}
+
+	in_file = fopen(in_filename, "rb");
+	if(in_file == NULL){
+		perror(in_filename);
+		fclose(key_file);
+		return EXIT_FAILURE;
+	}
+
+	int to_stdout = 0;
+
+	if(strcmp(out, "-") == 0){
+		to_stdout = 1;
+		out_file  = stdout;
+	}else {
+		out_file =  fopen(out, "wb");
+		if(out_file == NULL){
+			perror(out);
+			fclose(key_file);
+			fclose(in_file);
+			return EXIT_FAILURE;
+		}
+	}
+
+	ks = ks_create(key, KEY_SIZE);
+	if (ks == NULL){
+		fprintf(stderr, "Error: failed to create KStream instance.\n");
+		fclose(key_file);
+        	fclose(in_file);
+        	if (!to_stdout) fclose(out_file);
+        	return EXIT_FAILURE;
+	}
+
+	main_helper(ks, in_file, out_file, to_stdout);
+	fclose(key_file);
+	fclose(in_file);
+	if (!to_stdout) fclose(out_file);
+    	ks_destroy(ks);
+	
+	return EXIT_SUCCESS; 
 }
 
 
