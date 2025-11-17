@@ -19,7 +19,7 @@
  * Prints the usage message to stderr.
  */
 static void print_usage(void){
-	fprintf(stderr, "usage: mcrypt key-file in-file [ out file | -]\n");
+	fprintf(stderr, "usage: mcrypt key-file in-file [ out-file | - ]\n");
 }
 
 /**
