@@ -9,13 +9,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+
 /**
  * Struct KStream_s
  */
  struct KStream_s{
 	 byte S[256];
-	 byte i;
-	 byte j;
+	 unsigned i;
+	 unsigned j;
 };
 
 // private helper functions 
@@ -42,30 +44,28 @@ static byte next_byte(KStream ks){
 	ks->i = (ks->i +1) % 256;
 	ks->j = (ks->j + ks->S[ks->i]) % 256;
 	swap(&(ks->S[ks->i]),&(ks->S[ks->j]));
-	byte B = ks->S[(ks->S[ks->i]+ks->S[ks->j]) % 256];
-	return B;
-	}
+	unsigned int index = (ks->S[ks->i] + ks->S[ks->j]) % 256;
+	return ks->S[index];
+}
 
 
 // public Function Implementations 
 
-/**
- * ks_create- constructs a KStream instance.
- */
 KStream ks_create(byte *key, size_t keylen){
 	KStream ks = malloc(sizeof(struct KStream_s));
 	if (ks == NULL){
 		return NULL;
 	}
 
-	for (int i = 0; i < 256; i++){
+	for (unsigned int i = 0; i < 256; i++){
 		ks->S[i] = i;
 	}
-	ks->j = 0;
+
+	unsigned int j = 0;
 
 	for( int i = 0; i < 256; i++){
-		ks->j = (ks->j + ks->S[i] + key[ i % keylen]) % 256;
-		swap(&(ks->S[i]),&(ks->S[ks->j]));	
+		j = (j + ks->S[i] + (unsigned int)key[i % keylen]) % 256;
+		swap(&(ks->S[i]),&(ks->S[j]));	
 	}	
 
 	ks->i = 0;
@@ -74,21 +74,21 @@ KStream ks_create(byte *key, size_t keylen){
 	for ( int k = 0; k < 1024; k++){
 		next_byte(ks);
 	}
-	
+
 	return ks;
 }
 
-/**
- *ks_translate - translates data between input and output forms.
+/*
+ *ks_translate - translate data between input and output forms.
  */
 void ks_translate(KStream ks, byte *in_bytes, byte *out_bytes, size_t num){
-	
-	for (size_t i = 0; i < num; i++){
+	for(size_t i = 0; i < num; i++){
 		out_bytes[i] = in_bytes[i] ^ next_byte(ks);
 	}
 }
 
-// ks_destroy - free the mnemory for the KStream instance. 
+// ks_destroy - free the memory for the KStream instance
 void ks_destroy(KStream ks){
 	free(ks);
 }
+	

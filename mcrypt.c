@@ -40,8 +40,8 @@ static void main_helper(KStream ks, FILE *in_file, FILE *out_file, int to_stdout
 		ks_translate(ks, in_buffer, out_buffer, bytes_read);
 		if (to_stdout == 1){
 			for (size_t i = 0; i < bytes_read; i++){
-				if(isascii(out_buffer[i])){
-					printf("%c", out_buffer[i]);
+				if(out_buffer[i] <= 127){
+					putchar(out_buffer[i]);
 				} else {
 					printf("%02x", out_buffer[i]);
 				}
