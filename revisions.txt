@@ -1,0 +1,53 @@
+commit f3b035184b3b4385b005cbdc6caf775f7f305fff
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sun Nov 16 19:33:47 2025 -0500
+
+    fixed compile errors
+
+commit 0b4e7120aef90a1ad4778dbdeca24550a7085f67
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sun Nov 16 17:48:38 2025 -0500
+
+    implemented main() in mcrypt.c
+
+commit ce5965249e9faee57b25a64c99ed8bbe76f23ac7
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sun Nov 16 17:27:17 2025 -0500
+
+    Fixed multiple compile errors for KStream.h and Kstream.c
+
+commit 585e4812826fc13129bf7aa17de14f4b52b08f34
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sat Nov 15 22:10:04 2025 -0500
+
+    fixed compile errors
+
+commit dfa8adfd50d859367e80a6c3d1f521fe52149e3d
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sat Nov 15 20:43:16 2025 -0500
+
+     added mcrypt.c and implemented it's main_helper() function
+
+commit e6522e2ad9bc532cf42e0df9aa1ff9f9ebca1d79
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sat Nov 15 19:47:50 2025 -0500
+
+    implemented all Kstream.c public functions
+
+commit 2367f4e4b2ecfa072185ff94786057da6fda1b91
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Sat Nov 15 19:13:52 2025 -0500
+
+    implemented KStream helper functions, still working on ks_create()
+
+commit 3a18982d39ddd015d003ca005b19e7b3fdfe4d3f
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Fri Nov 14 18:11:53 2025 -0500
+
+     Implemented the ADT interface for Kstream.c
+
+commit 25ac06ce598ef31cceff7311071b0f1b7cd93e15
+Author: jsa-6675 <jsa6675@g.rit.edu>
+Date:   Wed Nov 12 18:48:04 2025 -0500
+
+    added intial files
